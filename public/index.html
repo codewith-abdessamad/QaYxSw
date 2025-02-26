@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel - Fedora Server</title>
+    <link href="../src/css/styles.css" rel="stylesheet">
+    <link href="../src/css/own.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+</head>
+<body class=" ">
+    <div class="sidebar" id="sidebar">
+        <!-- Logo (moved outside of nav sections) -->
+        <a href="#home" class="logo-item" title="Home">
+            <img src="../src/Icon/logo.svg" alt="Fedora Logo" class="w-5 h-5">
+        </a>
+        
+        <!-- System Section -->
+        <div class="nav-section nav-section-top">
+            <a href="#dashboard" class="nav-item active" title="Dashboard">
+                <img src="../src/Icon/Dashboard.svg" alt="Dashboard" class="w-5 h-5">
+            </a>
+            <a href="#terminal" class="nav-item" title="Terminal">
+                <img src="../src/Icon/terminal.svg" alt="Terminal" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Core Services Section -->
+        <div class="nav-section nav-section-middle">
+            <a href="#services" class="nav-item" title="Services">
+                <img src="../src/Icon/package.svg" alt="Services" class="w-5 h-5">
+            </a>
+            <a href="#network" class="nav-item" title="Network">
+                <img src="../src/Icon/network.svg" alt="Network" class="w-5 h-5">
+            </a>
+            <a href="#users" class="nav-item" title="Users & Groups">
+                <img src="../src/Icon/users.svg" alt="Users" class="w-5 h-5">
+            </a>
+            <a href="#security" class="nav-item" title="Security">
+                <img src="../src/Icon/security.svg" alt="Security" class="w-5 h-5">
+            </a>
+            <a href="#logs" class="nav-item" title="Logs">
+                <img src="../src/Icon/logs.svg" alt="Logs" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="nav-section nav-section-bottom">
+            <a href="#updates" class="nav-item" title="Updates">
+                <img src="../src/Icon/update.svg" alt="Updates" class="w-5 h-5">
+            </a>
+            <a href="#settings" class="nav-item" title="Settings">
+                <img src="../src/Icon/setting.svg" alt="Settings" class="w-5 h-5">
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <header class="bg-white  p-2.5 font-mono  ">
+            <!-- Header -->
+            <div class="flex justify-between items-center  mx-1 ">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-sm font-normal text-gray-800">Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-3 mr-2">
+                    <div class="relative w-30 ">
+                        <button class="  rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200  flex items-center  space-x-2 user-button px-2 py-1">
+                            <span class="Username font-mono">John Doe</span>
+                            <img src="../src/Icon/expand-up-down-line.svg" alt="User" class="w-4 h-4">
+                        </button>
+                        <div class="absolute right-0  w-48 bg-white rounded-lg shadow-xl border border-gray-200 hidden dropdown-list mt-1">
+                            <div class="p-2 text-sm text-gray-500">User Options</div>
+                            <div class="border-b border-gray-200"></div>
+                            <a href="#profile" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#settings" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#logout" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+
+        </header>
+
+        <div class="px-4">
+            
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-4 gap-6 mb-8 border border-gray-200 rounded-lg p-4">
+                <!-- System Status -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">System Status</div>
+                    <div class="flex items-baseline" id="systemStatusContainer">
+                        <div class="text-2xl font-semibold mr-2" id="statusText">Online</div>
+                        <div class="text-xs" id="statusIndicator">●</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">
+                        Last checked: <span id="lastChecked">Just now</span>
+                        <div id="statusMessage"></div>
+                    </div>
+                </div>
+
+                <!-- Active Services -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">Active Services</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">24/30</div>
+                        <div class="text-xs text-blue-500">Services</div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>● Running: 24</span>
+                        <span>● Stopped: 6</span>
+                    </div>
+                </div>
+
+                <!-- Server Temperature -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">Server Temperature</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">45°C</div>
+                        <div class="text-xs text-green-500">↓ -2°C</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Normal operating range</div>
+                </div>
+
+                <!-- Storage Health -->
+                <div class="bg-white rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Storage Health</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">98%</div>
+                        <div class="text-xs text-green-500">Healthy</div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>● SMART Status: OK</span>
+                        <span>2 Drives</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status and Services -->
+            <div class="grid grid-cols-3 gap-6 mb-8">
+                <!-- System Status Graph -->
+                <div class="col-span-2 bg-white rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-medium">System Load</h2>
+                        <div class="flex space-x-4">
+                            <button class="text-xs text-gray-500 hover:text-gray-800 border-b-2 border-blue-500">1 Hour</button>
+                            <button class="text-xs text-gray-500 hover:text-gray-800">24 Hours</button>
+                            <button class="text-xs text-gray-500 hover:text-gray-800">7 Days</button>
+                        </div>
+                    </div>
+                    <canvas id="systemLoadChart" height="200"></canvas>
+                </div>
+
+                <!-- System Info -->
+                <div class="bg-white rounded-lg p-4">
+                    <h2 class="text-sm font-medium mb-4">System Information</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">Hostname</span>
+                            <span class="text-xs font-medium">fedora-server.local</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">OS</span>
+                            <span class="text-xs font-medium">Fedora 38</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">Kernel</span>
+                            <span class="text-xs font-medium">6.2.9-300.fc38.x86_64</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">Uptime</span>
+                            <span class="text-xs font-medium">14d 6h 32m</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">Last Boot</span>
+                            <span class="text-xs font-medium">May 15, 2023 08:42</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-500">IP Address</span>
+                            <span class="text-xs font-medium">192.168.1.100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services and Updates -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Services -->
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-medium">Services Status</h2>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Start All</button>
+                            <button class="text-xs bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Stop All</button>
+                        </div>
+                    </div>
+                    
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-xs text-gray-500 border-b">
+                                <th class="text-left pb-2 font-normal">Service</th>
+                                <th class="text-left pb-2 font-normal">Status</th>
+                                <th class="text-left pb-2 font-normal">Uptime</th>
+                                <th class="text-right pb-2 font-normal">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs">
+                            <tr class="border-b">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                        httpd.service
+                                    </div>
+                                </td>
+                                <td class="py-2">Active</td>
+                                <td class="py-2">14d 5h</td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Restart</button>
+                                    <button class="text-xs text-gray-500 hover:text-gray-700 ml-2">Stop</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                        sshd.service
+                                    </div>
+                                </td>
+                                <td class="py-2">Active</td>
+                                <td class="py-2">14d 6h</td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Restart</button>
+                                    <button class="text-xs text-gray-500 hover:text-gray-700 ml-2">Stop</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                                        mariadb.service
+                                    </div>
+                                </td>
+                                <td class="py-2">Inactive</td>
+                                <td class="py-2">-</td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Start</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                        firewalld.service
+                                    </div>
+                                </td>
+                                <td class="py-2">Active</td>
+                                <td class="py-2">14d 6h</td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Restart</button>
+                                    <button class="text-xs text-gray-500 hover:text-gray-700 ml-2">Stop</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Updates -->
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-medium">Available Updates</h2>
+                        <button class="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Update All</button>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-orange-100 p-1 rounded mr-3">
+                                    <img src="../src/Icon/security.svg" alt="Security" class="w-4 h-4">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Security Updates</p>
+                                    <p class="text-xs text-gray-500">3 critical updates available</p>
+                                </div>
+                            </div>
+                            <button class="text-xs bg-orange-500 text-white px-2 py-1 rounded hover:bg-orange-600">Install</button>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 p-1 rounded mr-3">
+                                    <img src="../src/Icon/package.svg" alt="Package" class="w-4 h-4">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">System Packages</p>
+                                    <p class="text-xs text-gray-500">12 packages can be updated</p>
+                                </div>
+                            </div>
+                            <button class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Install</button>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-1 rounded mr-3">
+                                    <img src="../src/Icon/terminal.svg" alt="Application" class="w-4 h-4">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Applications</p>
+                                    <p class="text-xs text-gray-500">5 application updates available</p>
+                                </div>
+                            </div>
+                            <button class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Install</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-500">Last checked:</span>
+                            <span>Today, 08:00 AM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table Section -->
+            <div class="bg-white rounded-lg p-4 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-medium">Users</h2>
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <input type="text" placeholder="Filter users..." class="text-xs border rounded-md pl-7 pr-2 py-1 w-48">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <select class="text-xs border rounded-md px-2 py-1">
+                            <option>Sort</option>
+                            <option>Name (A-Z)</option>
+                            <option>Last login</option>
+                            <option>Role</option>
+                        </select>
+                        <button class="text-xs bg-blue-500 text-white rounded-md px-2 py-1">+ New User</button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="pb-2 text-left">
+                                    <div class="flex items-center text-xs text-gray-500 font-normal">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <span>Name <span></span>
+                                    </div>
+                                </th>
+                                <th class="pb-2 text-left">
+                                    <div class="text-xs text-gray-500 font-normal">Username</div>
+                                </th>
+                                <th class="pb-2 text-left">
+                                    <div class="text-xs text-gray-500 font-normal">Role</div>
+                                </th>
+                                <th class="pb-2 text-left">
+                                    <div class="text-xs text-gray-500 font-normal">Groups</div>
+                                </th>
+                                <th class="pb-2 text-left">
+                                    <div class="text-xs text-gray-500 font-normal">Last Login</div>
+                                </th>
+                                <th class="pb-2 text-left">
+                                    <div class="text-xs text-gray-500 font-normal">Status</div>
+                                </th>
+                                <th class="pb-2 text-right">
+                                    <div class="text-xs text-gray-500 font-normal">Actions</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Root User -->
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <div class="bg-red-100 rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                            <span class="text-xs text-red-600 font-medium">R</span>
+                                        </div>
+                                        <span class="text-xs font-medium">Root</span>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">root</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full">Superuser</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">root, wheel</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">Today, 08:42 AM</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Active</span>
+                                </td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Edit</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Admin User -->
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <div class="bg-blue-100 rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                            <span class="text-xs text-blue-600 font-medium">A</span>
+                                        </div>
+                                        <span class="text-xs font-medium">Admin User</span>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">admin</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Administrator</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">wheel, sudo</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">Yesterday, 17:30 PM</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Active</span>
+                                </td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Edit</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Web Service User -->
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <div class="bg-purple-100 rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                            <span class="text-xs text-purple-600 font-medium">W</span>
+                                        </div>
+                                        <span class="text-xs font-medium">Web Service</span>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">www-data</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">Service</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">www-data</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">-</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">System</span>
+                                </td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Edit</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Regular User -->
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <div class="bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                            <span class="text-xs text-gray-600 font-medium">J</span>
+                                        </div>
+                                        <span class="text-xs font-medium">John Smith</span>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">jsmith</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full">User</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">users, developers</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">3 days ago</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Active</span>
+                                </td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Edit</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Inactive User -->
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2 rounded">
+                                        <div class="bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center mr-2">
+                                            <span class="text-xs text-gray-600 font-medium">S</span>
+                                        </div>
+                                        <span class="text-xs font-medium">Sarah Johnson</span>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">sjohnson</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full">User</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">users, marketing</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs">30 days ago</span>
+                                </td>
+                                <td class="py-2">
+                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full">Inactive</span>
+                                </td>
+                                <td class="py-2 text-right">
+                                    <button class="text-xs text-gray-500 hover:text-gray-700">Edit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4 text-xs text-gray-500">
+                    <div>Showing 5 of 12 users</div>
+                    <div class="flex items-center space-x-2">
+                        <button class="border rounded px-2 py-1 hover:bg-gray-50">Previous</button>
+                        <button class="bg-blue-50 text-blue-600 border border-blue-200 rounded px-2 py-1">1</button>
+                        <button class="border rounded px-2 py-1 hover:bg-gray-50">2</button>
+                        <button class="border rounded px-2 py-1 hover:bg-gray-50">3</button>
+                        <button class="border rounded px-2 py-1 hover:bg-gray-50">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- At the bottom of the body tag -->
+<script src="../src/js/main.js"></script>
+</body>
+</html>

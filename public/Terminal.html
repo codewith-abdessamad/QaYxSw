@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal - Fedora Server</title>
+    <link href="../src/css/styles.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Outfit", serif;
+            font-weight: 400;
+            font-style: normal;
+            background-color: #f8f7f5;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 70px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: white;
+            border-right: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .nav-section-top {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 1.2rem 0;
+        }
+
+        .nav-section-middle {
+            flex-grow: 1;
+            padding: 1rem 0;
+        }
+
+        .nav-section-bottom {
+            border-top: 1px solid #e5e5e5;
+            padding: 1.2rem 0;
+        }
+
+        .nav-item {
+            padding: 0.5rem;
+            margin: 0 10px 8px 10px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(100% - 20px);
+            position: relative;
+            transition: background-color 0.2s ease;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .nav-item img {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: #f8f7f5;
+        }
+
+        .nav-item:hover img {
+            opacity: 1;
+        }
+
+        /* Active state styling */
+        .nav-item.active {
+            position: relative;
+            background-color: #f8f7f5;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Remove the left indicator */
+        .nav-item.active::before {
+            display: none;
+        }
+        
+        .nav-item.active img {
+            opacity: 1;
+        }
+
+        .logo-container {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e5e5e5;
+            width: 100%;
+        }
+
+        .main-content {
+            margin-left: 70px;
+        }
+
+        /* Logo specific styles */
+        .logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e5e5;
+            width: 100%;
+        }
+        
+        .logo-item img {
+            width: 24px;
+            height: 24px;
+            opacity: 1;
+        }
+
+        /* Terminal specific styles */
+        .terminal {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .terminal-header {
+            background-color: #2d2d2d;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        .terminal-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-tab {
+            padding: 4px 12px;
+            border-radius: 4px 4px 0 0;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .terminal-tab.active {
+            background-color: #1e1e1e;
+            border: 1px solid #3d3d3d;
+            border-bottom: none;
+        }
+
+        .terminal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-action {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .terminal-close {
+            background-color: #ff5f56;
+        }
+
+        .terminal-minimize {
+            background-color: #ffbd2e;
+        }
+
+        .terminal-maximize {
+            background-color: #27c93f;
+        }
+
+        .terminal-body {
+            padding: 16px;
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .terminal-prompt {
+            color: #50fa7b;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .terminal-command {
+            flex-grow: 1;
+            word-break: break-all;
+        }
+
+        .terminal-output {
+            margin-bottom: 16px;
+            color: #d8d8d8;
+            word-break: break-all;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-input {
+            background-color: transparent;
+            border: none;
+            color: #f0f0f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .terminal-cursor {
+            width: 8px;
+            height: 16px;
+            background-color: #f0f0f0;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Terminal history and favorites */
+        .terminal-sidebar {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .terminal-sidebar-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 500;
+        }
+
+        .terminal-sidebar-content {
+            padding: 12px;
+        }
+
+        .terminal-history-item, .terminal-favorite-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-history-item:hover, .terminal-favorite-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .terminal-favorite-item {
+            color: #3b82f6;
+        }
+
+        .star-icon {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-[#f8f7f5]">
+    <div class="sidebar" id="sidebar">
+        <!-- Logo (moved outside of nav sections) -->
+        <a href="index.html" class="logo-item" title="Home">
+            <img src="../src/Icon/logo.svg" alt="Fedora Logo" class="w-5 h-5">
+        </a>
+        
+        <!-- System Section -->
+        <div class="nav-section nav-section-top">
+            <a href="index.html" class="nav-item" title="Dashboard">
+                <img src="../src/Icon/Dashboard.svg" alt="Dashboard" class="w-5 h-5">
+            </a>
+            <a href="Terminal.html" class="nav-item active" title="Terminal">
+                <img src="../src/Icon/terminal.svg" alt="Terminal" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Core Services Section -->
+        <div class="nav-section nav-section-middle">
+            <a href="#services" class="nav-item" title="Services">
+                <img src="../src/Icon/package.svg" alt="Services" class="w-5 h-5">
+            </a>
+            <a href="#network" class="nav-item" title="Network">
+                <img src="../src/Icon/network.svg" alt="Network" class="w-5 h-5">
+            </a>
+            <a href="#users" class="nav-item" title="Users & Groups">
+                <img src="../src/Icon/users.svg" alt="Users" class="w-5 h-5">
+            </a>
+            <a href="#security" class="nav-item" title="Security">
+                <img src="../src/Icon/security.svg" alt="Security" class="w-5 h-5">
+            </a>
+            <a href="#logs" class="nav-item" title="Logs">
+                <img src="../src/Icon/logs.svg" alt="Logs" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="nav-section nav-section-bottom">
+            <a href="#updates" class="nav-item" title="Updates">
+                <img src="../src/Icon/update.svg" alt="Updates" class="w-5 h-5">
+            </a>
+            <a href="#settings" class="nav-item" title="Settings">
+                <img src="../src/Icon/setting.svg" alt="Settings" class="w-5 h-5">
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-medium text-gray-800">Terminal</h1>
+                    <div class="text-sm text-gray-500">Interactive Shell</div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="text-sm text-gray-600 border rounded-md px-3 py-1.5 hover:bg-gray-50">New Session</button>
+                    <button class="text-sm text-gray-600 border rounded-md px-3 py-1.5 hover:bg-gray-50">Settings</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-6">
+                <!-- Terminal sidebar with history and favorites -->
+                <div class="col-span-1">
+                    <div class="terminal-sidebar mb-6">
+                        <div class="terminal-sidebar-header text-sm">Command History</div>
+                        <div class="terminal-sidebar-content">
+                            <div class="terminal-history-item">
+                                <span>ls -la /var/log</span>
+                                <i class="far fa-star text-gray-400 hover:text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-history-item">
+                                <span>systemctl status httpd</span>
+                                <i class="far fa-star text-gray-400 hover:text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-history-item">
+                                <span>df -h</span>
+                                <i class="far fa-star text-gray-400 hover:text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-history-item">
+                                <span>free -m</span>
+                                <i class="far fa-star text-gray-400 hover:text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-history-item">
+                                <span>top -b -n 1</span>
+                                <i class="far fa-star text-gray-400 hover:text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="terminal-sidebar">
+                        <div class="terminal-sidebar-header text-sm">Favorite Commands</div>
+                        <div class="terminal-sidebar-content">
+                            <div class="terminal-favorite-item">
+                                <span>dnf update -y</span>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-favorite-item">
+                                <span>journalctl -xe</span>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-favorite-item">
+                                <span>firewall-cmd --list-all</span>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                            <div class="terminal-favorite-item">
+                                <span>ps aux | grep httpd</span>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal main area -->
+                <div class="col-span-3">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-tabs">
+                                <div class="terminal-tab active">bash</div>
+                                <div class="terminal-tab">python</div>
+                                <div class="terminal-tab">+</div>
+                            </div>
+                            <div class="terminal-actions">
+                                <div class="terminal-action terminal-minimize"></div>
+                                <div class="terminal-action terminal-maximize"></div>
+                                <div class="terminal-action terminal-close"></div>
+                            </div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <div class="terminal-command">uname -a</div>
+                            </div>
+                            <div class="terminal-output">
+                                Linux fedora-server 6.2.9-300.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Mar 30 10:40:45 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+                            </div>
+
+                            <div class="terminal-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <div class="terminal-command">hostname</div>
+                            </div>
+                            <div class="terminal-output">
+                                fedora-server.local
+                            </div>
+
+                            <div class="terminal-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <div class="terminal-command">df -h</div>
+                            </div>
+                            <div class="terminal-output">
+                                Filesystem      Size  Used Avail Use% Mounted on<br>
+                                devtmpfs        4.0G     0  4.0G   0% /dev<br>
+                                tmpfs           4.0G     0  4.0G   0% /dev/shm<br>
+                                tmpfs           1.6G  1.8M  1.6G   1% /run<br>
+                                /dev/sda1       500G  118G  382G  24% /<br>
+                                /dev/sdb1       1.0T  450G  574G  44% /data
+                            </div>
+
+                            <div class="terminal-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <div class="terminal-command">free -m</div>
+                            </div>
+                            <div class="terminal-output">
+                                              total        used        free      shared  buff/cache   available<br>
+                                Mem:           7954        2150        3521          22        2283        5482<br>
+                                Swap:          4096         312        3784
+                            </div>
+
+                            <div class="terminal-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <div class="terminal-command">systemctl status sshd</div>
+                            </div>
+                            <div class="terminal-output">
+                                ● sshd.service - OpenSSH server daemon<br>
+                                     Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; preset: enabled)<br>
+                                     Active: active (running) since Tue 2023-05-15 08:42:15 UTC; 2 weeks 0 days ago<br>
+                                       Docs: man:sshd(8)<br>
+                                             man:sshd_config(5)<br>
+                                   Main PID: 1152 (sshd)<br>
+                                      Tasks: 1 (limit: 4915)<br>
+                                     Memory: 6.8M<br>
+                                        CPU: 25.613s<br>
+                                     CGroup: /system.slice/sshd.service<br>
+                                             └─1152 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+                            </div>
+
+                            <div class="terminal-input-line">
+                                <div class="terminal-prompt">[root@fedora ~]#</div>
+                                <input type="text" class="terminal-input" id="terminal-input" autofocus>
+                                <div class="terminal-cursor"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Terminal functionality
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalBody = document.querySelector('.terminal-body');
+        
+        terminalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value;
+                
+                // Add command to terminal
+                const commandLine = document.createElement('div');
+                commandLine.className = 'terminal-line';
+                commandLine.innerHTML = `
+                    <div class="terminal-prompt">[root@fedora ~]#</div>
+                    <div class="terminal-command">${command}</div>
+                `;
+                
+                // Remove input line
+                const inputLine = document.querySelector('.terminal-input-line');
+                terminalBody.removeChild(inputLine);
+                
+                // Add command line
+                terminalBody.appendChild(commandLine);
+                
+                // Add output based on command
+                let output = '';
+                
+                if (command === 'ls') {
+                    output = 'Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos';
+                } else if (command === 'pwd') {
+                    output = '/root';
+                } else if (command === 'date') {
+                    output = new Date().toString();
+                } else if (command === 'whoami') {
+                    output = 'root';
+                } else if (command.startsWith('echo ')) {
+                    output = command.substring(5);
+                } else if (command === 'help' || command === '--help') {
+                    output = 'Available commands: ls, pwd, date, whoami, echo, clear, help';
+                } else if (command === 'clear') {
+                    terminalBody.innerHTML = '';
+                    addInputLine();
+                    return;
+                } else if (command.trim() === '') {
+                    // Do nothing for empty command
+                } else {
+                    output = `bash: ${command}: command not found`;
+                }
+                
+                if (output) {
+                    const outputElement = document.createElement('div');
+                    outputElement.className = 'terminal-output';
+                    outputElement.innerHTML = output;
+                    terminalBody.appendChild(outputElement);
+                }
+                
+                // Add new input line
+                addInputLine();
+                
+                // Scroll to bottom
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+        });
+        
+        function addInputLine() {
+            const inputLine = document.createElement('div');
+            inputLine.className = 'terminal-input-line';
+            inputLine.innerHTML = `
+                <div class="terminal-prompt">[root@fedora ~]#</div>
+                <input type="text" class="terminal-input" id="terminal-input" autofocus>
+                <div class="terminal-cursor"></div>
+            `;
+            terminalBody.appendChild(inputLine);
+            
+            // Focus on new input
+            document.getElementById('terminal-input').focus();
+        }
+        
+        // Handle history and favorites
+        const historyItems = document.querySelectorAll('.terminal-history-item');
+        const favoriteItems = document.querySelectorAll('.terminal-favorite-item');
+        
+        historyItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const command = item.querySelector('span').textContent;
+                document.getElementById('terminal-input').value = command;
+                document.getElementById('terminal-input').focus();
+            });
+        });
+        
+        favoriteItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const command = item.querySelector('span').textContent;
+                document.getElementById('terminal-input').value = command;
+                document.getElementById('terminal-input').focus();
+            });
+        });
+        
+        // Handle star icons for favorites
+        const starIcons = document.querySelectorAll('.fa-star');
+        
+        starIcons.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (icon.classList.contains('far')) {
+                    // Add to favorites
+                    icon.classList.remove('far', 'text-gray-400', 'hover:text-yellow-500');
+                    icon.classList.add('fas', 'text-yellow-500');
+                } else {
+                    // Remove from favorites
+                    icon.classList.remove('fas', 'text-yellow-500');
+                    icon.classList.add('far', 'text-gray-400', 'hover:text-yellow-500');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "only-wen-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",
+    "build": "npx tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
+    "start": "npm run dev & live-server public --port=8080",
+    "test": "echo \"No tests specified yet\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "live-server": "^1.2.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17"
+  }
+}
