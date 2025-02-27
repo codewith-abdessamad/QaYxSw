@@ -548,6 +548,109 @@
         </div>
     </div>
 
+    <!-- Add this right before the closing </div> of the main content -->
+    <!-- User Edit Modal -->
+    <div id="userEditModal" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-[600px] max-h-[80vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900">Edit User</h3>
+                <button class="text-gray-400 hover:text-gray-500" onclick="closeModal()">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="px-6 py-4">
+                <form id="userEditForm" class="space-y-4">
+                    <!-- Basic Information -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-medium text-gray-900">Basic Information</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="userName" class="w-full text-sm border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Username</label>
+                                <input type="text" id="userUsername" class="w-full text-sm border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role and Status -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-medium text-gray-900">Role & Status</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Role</label>
+                                <select id="userRole" class="w-full text-sm border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="user">User</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="superuser">Superuser</option>
+                                    <option value="service">Service Account</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Status</label>
+                                <select id="userStatus" class="w-full text-sm border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="locked">Locked</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Groups -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-medium text-gray-900">Group Membership</h4>
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2" id="userGroups">
+                                <!-- Groups will be added here dynamically -->
+                            </div>
+                            <button type="button" class="text-xs text-blue-600 hover:text-blue-700">
+                                + Add to group
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Password Reset -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-medium text-gray-900">Password Management</h4>
+                        <div class="space-y-2">
+                            <button type="button" class="text-xs bg-gray-100 text-gray-700 px-3 py-2 rounded hover:bg-gray-200">
+                                Reset Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Account Details -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-medium text-gray-900">Account Details</h4>
+                        <div class="space-y-2 text-xs text-gray-500">
+                            <div>Created: <span id="userCreated">March 15, 2024</span></div>
+                            <div>Last Login: <span id="userLastLogin">2 hours ago</span></div>
+                            <div>Last Modified: <span id="userLastModified">Yesterday</span></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
+                <button class="text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50" onclick="closeModal()">
+                    Cancel
+                </button>
+                <button class="text-sm px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600" onclick="saveUserChanges()">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../src/js/main.js"></script>
 </body>
 </html>

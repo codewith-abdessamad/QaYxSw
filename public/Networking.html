@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Management - Fedora Server</title>
+    <link href="../src/css/styles.css" rel="stylesheet">
+    <link href="../src/css/own.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <!-- Logo (moved outside of nav sections) -->
+        <a href="index.html" class="logo-item" title="Home">
+            <img src="../src/Icon/logo.svg" alt="Fedora Logo" class="w-5 h-5">
+        </a>
+        
+        <!-- System Section -->
+        <div class="nav-section nav-section-top">
+            <a href="index.html" class="nav-item" title="Dashboard">
+                <img src="../src/Icon/Dashboard.svg" alt="Dashboard" class="w-5 h-5">
+            </a>
+            <a href="#terminal" class="nav-item" title="Terminal">
+                <img src="../src/Icon/terminal.svg" alt="Terminal" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Core Services Section -->
+        <div class="nav-section nav-section-middle">
+            <a href="#services" class="nav-item" title="Services">
+                <img src="../src/Icon/package.svg" alt="Services" class="w-5 h-5">
+            </a>
+            <a href="Networking.html" class="nav-item active" title="Network">
+                <img src="../src/Icon/network.svg" alt="Network" class="w-5 h-5">
+            </a>
+            <a href="#users" class="nav-item" title="Users & Groups">
+                <img src="../src/Icon/users.svg" alt="Users" class="w-5 h-5">
+            </a>
+            <a href="#security" class="nav-item" title="Security">
+                <img src="../src/Icon/security.svg" alt="Security" class="w-5 h-5">
+            </a>
+            <a href="#logs" class="nav-item" title="Logs">
+                <img src="../src/Icon/logs.svg" alt="Logs" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="nav-section nav-section-bottom">
+            <a href="#updates" class="nav-item" title="Updates">
+                <img src="../src/Icon/update.svg" alt="Updates" class="w-5 h-5">
+            </a>
+            <a href="#settings" class="nav-item" title="Settings">
+                <img src="../src/Icon/setting.svg" alt="Settings" class="w-5 h-5">
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <header class="bg-white p-2.5 font-mono">
+            <!-- Header -->
+            <div class="flex justify-between items-center mx-1">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-sm font-normal text-gray-800">Network Management</h1>
+                </div>
+                <div class="flex items-center space-x-3 mr-2">
+                    <div class="relative w-30">
+                        <button class="rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200 flex items-center space-x-2 user-button px-2 py-1">
+                            <span class="Username font-mono">John Doe</span>
+                            <img src="../src/Icon/expand-up-down-line.svg" alt="User" class="w-4 h-4">
+                        </button>
+                        <div class="absolute right-0 w-48 bg-white rounded-lg shadow-xl border border-gray-200 hidden dropdown-list mt-1">
+                            <div class="p-2 text-sm text-gray-500">User Options</div>
+                            <div class="border-b border-gray-200"></div>
+                            <a href="#profile" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#settings" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#logout" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </header>
+
+        <div class="px-4">
+            <!-- Network Overview -->
+            <div class="grid grid-cols-4 gap-6 mb-8 border border-gray-200 rounded-lg p-4">
+                <!-- Network Status -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">Network Status</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">Connected</div>
+                        <div class="text-xs text-green-500">●</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">All interfaces active</div>
+                </div>
+
+                <!-- Network Speed -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">Network Speed</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">1 Gbps</div>
+                        <div class="text-xs text-blue-500">Full-duplex</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Link speed: 1000 Mbps</div>
+                </div>
+
+                <!-- Active Connections -->
+                <div class="bg-white rounded-lg p-4 relative after:content-[''] after:absolute after:right-[-1.5rem] after:top-[10%] after:h-[80%] after:w-[1px] after:bg-gray-200">
+                    <div class="text-sm text-gray-500 mb-1">Active Connections</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">156</div>
+                        <div class="text-xs text-green-500">↑ 12</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">TCP: 132 | UDP: 24</div>
+                </div>
+
+                <!-- Firewall Status -->
+                <div class="bg-white rounded-lg p-4">
+                    <div class="text-sm text-gray-500 mb-1">Firewall Status</div>
+                    <div class="flex items-baseline">
+                        <div class="text-2xl font-semibold mr-2">Active</div>
+                        <div class="text-xs text-green-500">●</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">15 rules enabled</div>
+                </div>
+            </div>
+
+            <!-- Network Interfaces -->
+            <div class="bg-white rounded-lg p-4 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-medium">Network Interfaces</h2>
+                    <button class="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Add Interface</button>
+                </div>
+                
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-xs text-gray-500 border-b">
+                            <th class="text-left pb-2 font-normal">Interface</th>
+                            <th class="text-left pb-2 font-normal">IP Address</th>
+                            <th class="text-left pb-2 font-normal">MAC Address</th>
+                            <th class="text-left pb-2 font-normal">Status</th>
+                            <th class="text-left pb-2 font-normal">Speed</th>
+                            <th class="text-right pb-2 font-normal">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs">
+                        <tr class="border-b">
+                            <td class="py-2">eth0</td>
+                            <td class="py-2">192.168.1.100</td>
+                            <td class="py-2">00:1B:44:11:3A:B7</td>
+                            <td class="py-2">
+                                <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Active</span>
+                            </td>
+                            <td class="py-2">1 Gbps</td>
+                            <td class="py-2 text-right">
+                                <button class="text-gray-500 hover:text-gray-700">Configure</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2">wlan0</td>
+                            <td class="py-2">192.168.1.101</td>
+                            <td class="py-2">00:1B:44:11:3A:B8</td>
+                            <td class="py-2">
+                                <span class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full">Inactive</span>
+                            </td>
+                            <td class="py-2">-</td>
+                            <td class="py-2 text-right">
+                                <button class="text-gray-500 hover:text-gray-700">Configure</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Firewall Rules -->
+            <div class="bg-white rounded-lg p-4 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-medium">Firewall Rules</h2>
+                    <button class="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Add Rule</button>
+                </div>
+                
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-xs text-gray-500 border-b">
+                            <th class="text-left pb-2 font-normal">Rule Name</th>
+                            <th class="text-left pb-2 font-normal">Port</th>
+                            <th class="text-left pb-2 font-normal">Protocol</th>
+                            <th class="text-left pb-2 font-normal">Source</th>
+                            <th class="text-left pb-2 font-normal">Action</th>
+                            <th class="text-right pb-2 font-normal">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs">
+                        <tr class="border-b">
+                            <td class="py-2">SSH Access</td>
+                            <td class="py-2">22</td>
+                            <td class="py-2">TCP</td>
+                            <td class="py-2">Any</td>
+                            <td class="py-2">
+                                <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Allow</span>
+                            </td>
+                            <td class="py-2 text-right">
+                                <button class="text-gray-500 hover:text-gray-700">Edit</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2">HTTP</td>
+                            <td class="py-2">80</td>
+                            <td class="py-2">TCP</td>
+                            <td class="py-2">Any</td>
+                            <td class="py-2">
+                                <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Allow</span>
+                            </td>
+                            <td class="py-2 text-right">
+                                <button class="text-gray-500 hover:text-gray-700">Edit</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2">Block Telnet</td>
+                            <td class="py-2">23</td>
+                            <td class="py-2">TCP</td>
+                            <td class="py-2">Any</td>
+                            <td class="py-2">
+                                <span class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full">Deny</span>
+                            </td>
+                            <td class="py-2 text-right">
+                                <button class="text-gray-500 hover:text-gray-700">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DNS Settings -->
+            <div class="bg-white rounded-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-medium">DNS Settings</h2>
+                    <button class="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Update DNS</button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Primary DNS Server</label>
+                            <input type="text" value="8.8.8.8" class="w-full text-xs border rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Secondary DNS Server</label>
+                            <input type="text" value="8.8.4.4" class="w-full text-xs border rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Search Domain</label>
+                            <input type="text" value="example.com" class="w-full text-xs border rounded-md px-3 py-2">
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-xs font-medium mb-2">DNS Cache Statistics</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Cache Size</span>
+                                <span>512 KB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Cache Entries</span>
+                                <span>1,234</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Hit Rate</span>
+                                <span>87%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Last Cleared</span>
+                                <span>2 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../src/js/main.js"></script>
+</body>
+</html>
