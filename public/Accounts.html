@@ -551,9 +551,9 @@
     <!-- Add this right before the closing </div> of the main content -->
     <!-- User Edit Modal -->
     <div id="userEditModal" class="fixed inset-0 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl w-[600px] max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-lg shadow-xl w-[500px] max-h-[80vh] overflow-y-auto border border-gray-200 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100">
             <!-- Modal Header -->
-            <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div class="border-b border-gray-200 px-4 py-3 flex items-center justify-between">
                 <h3 class="text-lg font-medium text-gray-900">Edit User</h3>
                 <button class="text-gray-400 hover:text-gray-500" onclick="closeModal()">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -563,8 +563,8 @@
             </div>
 
             <!-- Modal Content -->
-            <div class="px-6 py-4">
-                <form id="userEditForm" class="space-y-4">
+            <div class="px-4 py-3">
+                <form id="userEditForm" class="space-y-3">
                     <!-- Basic Information -->
                     <div class="space-y-4">
                         <h4 class="text-sm font-medium text-gray-900">Basic Information</h4>
@@ -640,7 +640,7 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
+            <div class="border-t border-gray-200 px-4 py-3 flex justify-end space-x-3">
                 <button class="text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50" onclick="closeModal()">
                     Cancel
                 </button>
