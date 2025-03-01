@@ -551,7 +551,13 @@
     <!-- Add this right before the closing </div> of the main content -->
     <!-- User Edit Modal -->
     <div id="userEditModal" class="fixed inset-0 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl w-[500px] max-h-[80vh] overflow-y-auto border border-gray-200 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100">
+        <!-- Add mobile message -->
+        <div class="md:hidden px-4 py-3 bg-white rounded-lg shadow-xl border border-gray-200">
+            <p class="text-sm text-gray-700">User management is not available on mobile devices. Please use a desktop computer.</p>
+        </div>
+        
+        <!-- Add md:block to only show on desktop -->
+        <div class="hidden md:block bg-white rounded-lg shadow-xl w-[500px] max-h-[80vh] overflow-y-auto border border-gray-200 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100">
             <!-- Modal Header -->
             <div class="border-b border-gray-200 px-4 py-3 flex items-center justify-between">
                 <h3 class="text-lg font-medium text-gray-900">Edit User</h3>

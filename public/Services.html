@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Manager - Fedora Server</title>
+    <link href="../src/css/styles.css" rel="stylesheet">
+    <link href="../src/css/own.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <!-- Logo -->
+        <a href="index.html" class="logo-item" title="Home">
+            <img src="../src/Icon/logo.svg" alt="Fedora Logo" class="w-5 h-5">
+        </a>
+        
+        <!-- System Section -->
+        <div class="nav-section nav-section-top">
+            <a href="index.html" class="nav-item" title="Dashboard">
+                <img src="../src/Icon/Dashboard.svg" alt="Dashboard" class="w-5 h-5">
+            </a>
+            <a href="./Terminal.html" class="nav-item" title="Terminal">
+                <img src="../src/Icon/terminal.svg" alt="Terminal" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Core Services Section -->
+        <div class="nav-section nav-section-middle">
+            <a href="./Services.html" class="nav-item active" title="Services">
+                <img src="../src/Icon/package.svg" alt="Services" class="w-5 h-5">
+            </a>
+            <a href="./Networking.html" class="nav-item" title="Network">
+                <img src="../src/Icon/network.svg" alt="Network" class="w-5 h-5">
+            </a>
+            <a href="./Accounts.html" class="nav-item" title="Users & Groups">
+                <img src="../src/Icon/users.svg" alt="Users" class="w-5 h-5">
+            </a>
+            <a href="#security" class="nav-item" title="Security">
+                <img src="../src/Icon/security.svg" alt="Security" class="w-5 h-5">
+            </a>
+            <a href="#logs" class="nav-item" title="Logs">
+                <img src="../src/Icon/logs.svg" alt="Logs" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="nav-section nav-section-bottom">
+            <a href="#updates" class="nav-item" title="Updates">
+                <img src="../src/Icon/update.svg" alt="Updates" class="w-5 h-5">
+            </a>
+            <a href="#settings" class="nav-item" title="Settings">
+                <img src="../src/Icon/setting.svg" alt="Settings" class="w-5 h-5">
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <header class="bg-white p-2.5 font-mono">
+            <div class="flex justify-between items-center mx-1">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-sm font-normal text-gray-800">Services Manager</h1>
+                </div>
+                <div class="flex items-center space-x-3 mr-2">
+                    <div class="relative w-30">
+                        <button class="rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200 flex items-center space-x-2 user-button px-2 py-1">
+                            <span class="Username font-mono">John Doe</span>
+                            <img src="../src/Icon/expand-up-down-line.svg" alt="User" class="w-4 h-4">
+                        </button>
+                        <div class="absolute right-0 w-48 bg-white rounded-lg shadow-xl border border-gray-200 hidden dropdown-list mt-1">
+                            <div class="p-2 text-sm text-gray-500">User Options</div>
+                            <div class="border-b border-gray-200"></div>
+                            <a href="#profile" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#settings" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#logout" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <!-- Service Management Controls -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-lg font-semibold">System Services</h2>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors" onclick="refreshServices()">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" placeholder="Search services..." class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="searchServices">
+                        <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="filterStatus">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services List -->
+            <div class="bg-white rounded-lg border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uptime</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Memory Usage</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesList">
+                            <!-- Services will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Service Details Modal -->
+            <div id="serviceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold" id="modalServiceName">Service Details</h3>
+                        <button onclick="closeServiceModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="serviceDetails" class="space-y-4">
+                        <!-- Service details will be populated here -->
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button onclick="closeServiceModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample services data - In a real implementation, this would come from your backend
+        const services = [
+            { id: 1, name: 'httpd', status: 'active', uptime: '15d 2h 30m', memoryUsage: '128MB' },
+            { id: 2, name: 'mysql', status: 'active', uptime: '10d 5h 45m', memoryUsage: '256MB' },
+            { id: 3, name: 'ssh', status: 'active', uptime: '30d 12h 10m', memoryUsage: '64MB' },
+            { id: 4, name: 'docker', status: 'inactive', uptime: '-', memoryUsage: '-' },
+            { id: 5, name: 'nginx', status: 'failed', uptime: '-', memoryUsage: '-' }
+        ];
+
+        // Function to render services list
+        function renderServices(filteredServices = services) {
+            const servicesList = document.getElementById('servicesList');
+            servicesList.innerHTML = '';
+
+            filteredServices.forEach(service => {
+                const statusClass = {
+                    'active': 'text-green-500',
+                    'inactive': 'text-gray-500',
+                    'failed': 'text-red-500'
+                }[service.status];
+
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-200 hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <span class="font-medium">${service.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center ${statusClass}">
+                            <span class="h-2 w-2 rounded-full ${statusClass} bg-current mr-2"></span>
+                            ${service.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">${service.uptime}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${service.memoryUsage}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex space-x-2">
+                            ${service.status === 'active' ? `
+                                <button onclick="controlService('stop', ${service.id})" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                                <button onclick="controlService('restart', ${service.id})" class="text-blue-500 hover:text-blue-700">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                            ` : `
+                                <button onclick="controlService('start', ${service.id})" class="text-green-500 hover:text-green-700">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            `}
+                            <button onclick="showServiceDetails(${service.id})" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                servicesList.appendChild(row);
+            });
+        }
+
+        // Function to control services (start, stop, restart)
+        function controlService(action, serviceId) {
+            // In a real implementation, this would make an API call to control the service
+            console.log(`${action} service ${serviceId}`);
+            // Update the UI after the action is complete
+            setTimeout(refreshServices, 500);
+        }
+
+        // Function to show service details
+        function showServiceDetails(serviceId) {
+            const service = services.find(s => s.id === serviceId);
+            const modal = document.getElementById('serviceModal');
+            const modalServiceName = document.getElementById('modalServiceName');
+            const serviceDetails = document.getElementById('serviceDetails');
+
+            modalServiceName.textContent = service.name;
+            serviceDetails.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-500">Status</p>
+                        <p class="font-medium">${service.status}</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-500">Uptime</p>
+                        <p class="font-medium">${service.uptime}</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-500">Memory Usage</p>
+                        <p class="font-medium">${service.memoryUsage}</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-500">Dependencies</p>
+                        <p class="font-medium">None</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-500">Description</p>
+                    <p class="mt-1">Sample service description would go here.</p>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+        }
+
+        // Function to close service details modal
+        function closeServiceModal() {
+            const modal = document.getElementById('serviceModal');
+            modal.style.display = 'none';
+        }
+
+        // Function to refresh services list
+        function refreshServices() {
+            // In a real implementation, this would fetch fresh data from the server
+            renderServices();
+        }
+
+        // Search and filter functionality
+        document.getElementById('searchServices').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            const filteredServices = services.filter(service => {
+                const matchesSearch = service.name.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || service.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+            
+            renderServices(filteredServices);
+        });
+
+        document.getElementById('filterStatus').addEventListener('change', function(e) {
+            const statusFilter = e.target.value;
+            const searchTerm = document.getElementById('searchServices').value.toLowerCase();
+            
+            const filteredServices = services.filter(service => {
+                const matchesSearch = service.name.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || service.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+            
+            renderServices(filteredServices);
+        });
+
+        // Initialize the services list
+        renderServices();
+
+        // Initialize dropdown functionality
+        document.querySelector('.user-button').addEventListener('click', function() {
+            document.querySelector('.dropdown-list').classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-button')) {
+                document.querySelector('.dropdown-list').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

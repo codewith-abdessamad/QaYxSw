@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs Manager - Fedora Server</title>
+    <link href="../src/css/styles.css" rel="stylesheet">
+    <link href="../src/css/own.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <!-- Logo -->
+        <a href="index.html" class="logo-item" title="Home">
+            <img src="../src/Icon/logo.svg" alt="Fedora Logo" class="w-5 h-5">
+        </a>
+        
+        <!-- System Section -->
+        <div class="nav-section nav-section-top">
+            <a href="index.html" class="nav-item" title="Dashboard">
+                <img src="../src/Icon/Dashboard.svg" alt="Dashboard" class="w-5 h-5">
+            </a>
+            <a href="./Terminal.html" class="nav-item" title="Terminal">
+                <img src="../src/Icon/terminal.svg" alt="Terminal" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Core Services Section -->
+        <div class="nav-section nav-section-middle">
+            <a href="./Services.html" class="nav-item" title="Services">
+                <img src="../src/Icon/package.svg" alt="Services" class="w-5 h-5">
+            </a>
+            <a href="./Networking.html" class="nav-item" title="Network">
+                <img src="../src/Icon/network.svg" alt="Network" class="w-5 h-5">
+            </a>
+            <a href="./Accounts.html" class="nav-item" title="Users & Groups">
+                <img src="../src/Icon/users.svg" alt="Users" class="w-5 h-5">
+            </a>
+            <a href="#security" class="nav-item" title="Security">
+                <img src="../src/Icon/security.svg" alt="Security" class="w-5 h-5">
+            </a>
+            <a href="./Logs.html" class="nav-item active" title="Logs">
+                <img src="../src/Icon/logs.svg" alt="Logs" class="w-5 h-5">
+            </a>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="nav-section nav-section-bottom">
+            <a href="#updates" class="nav-item" title="Updates">
+                <img src="../src/Icon/update.svg" alt="Updates" class="w-5 h-5">
+            </a>
+            <a href="#settings" class="nav-item" title="Settings">
+                <img src="../src/Icon/setting.svg" alt="Settings" class="w-5 h-5">
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <header class="bg-white p-2.5 font-mono">
+            <div class="flex justify-between items-center mx-1">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-sm font-normal text-gray-800">Logs Manager</h1>
+                </div>
+                <div class="flex items-center space-x-3 mr-2">
+                    <div class="relative w-30">
+                        <button class="rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200 flex items-center space-x-2 user-button px-2 py-1">
+                            <span class="Username font-mono">John Doe</span>
+                            <img src="../src/Icon/expand-up-down-line.svg" alt="User" class="w-4 h-4">
+                        </button>
+                        <div class="absolute right-0 w-48 bg-white rounded-lg shadow-xl border border-gray-200 hidden dropdown-list mt-1">
+                            <div class="p-2 text-sm text-gray-500">User Options</div>
+                            <div class="border-b border-gray-200"></div>
+                            <a href="#profile" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#settings" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#logout" class="block p-2 text-xs text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <!-- Log Management Controls -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-lg font-semibold">System Logs</h2>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors" onclick="refreshLogs()">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                        <div class="border-l border-gray-200 h-6 mx-2"></div>
+                        <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors" onclick="exportLogs()">
+                            <i class="fas fa-download mr-2"></i>Export
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" placeholder="Search logs..." class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="searchLogs">
+                        <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="filterLevel">
+                            <option value="all">All Levels</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                        <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="filterService">
+                            <option value="all">All Services</option>
+                            <option value="system">System</option>
+                            <option value="httpd">HTTP Server</option>
+                            <option value="mysql">MySQL</option>
+                            <option value="ssh">SSH</option>
+                            <option value="docker">Docker</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Date Range Picker -->
+                <div class="flex justify-end items-center space-x-2 mb-4">
+                    <span class="text-sm text-gray-500">Time Range:</span>
+                    <select class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="timeRange">
+                        <option value="1h">Last 1 hour</option>
+                        <option value="6h">Last 6 hours</option>
+                        <option value="12h">Last 12 hours</option>
+                        <option value="24h" selected>Last 24 hours</option>
+                        <option value="7d">Last 7 days</option>
+                        <option value="30d">Last 30 days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                    <div id="customDateRange" class="hidden flex items-center space-x-2">
+                        <input type="datetime-local" class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="startDate">
+                        <span class="text-sm text-gray-500">to</span>
+                        <input type="datetime-local" class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" id="endDate">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors" onclick="applyCustomDateRange()">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Total Logs</p>
+                        <p class="text-xl font-semibold" id="totalLogsCount">1,285</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-list text-blue-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Warnings</p>
+                        <p class="text-xl font-semibold" id="warningsCount">42</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Errors</p>
+                        <p class="text-xl font-semibold" id="errorsCount">18</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-red-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Critical</p>
+                        <p class="text-xl font-semibold" id="criticalCount">3</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                        <i class="fas fa-skull-crossbones text-purple-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="bg-white rounded-lg border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsList">
+                            <!-- Logs will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="px-6 py-4 flex items-center justify-between border-t border-gray-200">
+                    <div class="text-sm text-gray-500">
+                        Showing <span id="showingStart">1</span> to <span id="showingEnd">50</span> of <span id="totalLogs">1,285</span> logs
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border border-gray-200 rounded-lg text-sm disabled:opacity-50" id="prevPage" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="flex space-x-1" id="paginationNumbers">
+                            <button class="px-3 py-1 border border-blue-500 bg-blue-50 text-blue-600 rounded-lg text-sm">1</button>
+                            <button class="px-3 py-1 border border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg text-sm">2</button>
+                            <button class="px-3 py-1 border border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg text-sm">3</button>
+                            <span class="px-3 py-1 text-sm">...</span>
+                            <button class="px-3 py-1 border border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg text-sm">26</button>
+                        </div>
+                        <button class="px-3 py-1 border border-gray-200 rounded-lg text-sm hover:border-blue-500 hover:bg-blue-50" id="nextPage">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Details Modal -->
+            <div id="logModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                <div class="bg-white rounded-lg p-6 w-full max-w-3xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Log Entry Details</h3>
+                        <button onclick="closeLogModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="logDetails" class="space-y-4">
+                        <!-- Log details will be populated here -->
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button onclick="closeLogModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample logs data - In a real implementation, this would come from your backend
+        const logs = [
+            { id: 1, timestamp: '2023-03-01 09:32:14', level: 'info', service: 'system', message: 'System startup completed successfully' },
+            { id: 2, timestamp: '2023-03-01 09:33:05', level: 'info', service: 'httpd', message: 'Apache HTTP Server started on port 80' },
+            { id: 3, timestamp: '2023-03-01 09:33:10', level: 'info', service: 'mysql', message: 'MySQL database server initialized' },
+            { id: 4, timestamp: '2023-03-01 09:35:22', level: 'warning', service: 'system', message: 'High CPU usage detected: 85%' },
+            { id: 5, timestamp: '2023-03-01 10:15:03', level: 'error', service: 'mysql', message: 'Connection refused: max_connections limit reached' },
+            { id: 6, timestamp: '2023-03-01 10:17:36', level: 'info', service: 'ssh', message: 'User admin logged in from 192.168.1.15' },
+            { id: 7, timestamp: '2023-03-01 10:25:42', level: 'warning', service: 'httpd', message: 'SSL certificate will expire in 7 days' },
+            { id: 8, timestamp: '2023-03-01 11:02:18', level: 'error', service: 'docker', message: 'Container web-app exited with code 1' },
+            { id: 9, timestamp: '2023-03-01 11:15:27', level: 'critical', service: 'system', message: 'Disk space critically low: 2% available on /var' },
+            { id: 10, timestamp: '2023-03-01 11:45:33', level: 'info', service: 'system', message: 'Automatic updates started' }
+        ];
+
+        // Generate more sample logs for pagination demo
+        for (let i = 11; i <= 1285; i++) {
+            const services = ['system', 'httpd', 'mysql', 'ssh', 'docker'];
+            const levels = ['info', 'info', 'info', 'warning', 'error', 'critical'];
+            const randomService = services[Math.floor(Math.random() * services.length)];
+            const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+            
+            const hours = Math.floor(Math.random() * 24);
+            const minutes = Math.floor(Math.random() * 60);
+            const seconds = Math.floor(Math.random() * 60);
+            const timestamp = `2023-03-01 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            logs.push({
+                id: i,
+                timestamp: timestamp,
+                level: randomLevel,
+                service: randomService,
+                message: `Sample log message #${i} for ${randomService}`
+            });
+        }
+
+        // Function to render logs list with pagination
+        function renderLogs(filteredLogs = logs, page = 1, pageSize = 50) {
+            const logsList = document.getElementById('logsList');
+            logsList.innerHTML = '';
+            
+            // Sort logs by timestamp (newest first)
+            filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Calculate pagination
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, filteredLogs.length);
+            const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
+            
+            // Update pagination UI
+            document.getElementById('showingStart').textContent = startIndex + 1;
+            document.getElementById('showingEnd').textContent = endIndex;
+            document.getElementById('totalLogs').textContent = filteredLogs.length.toLocaleString();
+            
+            // Update the counts
+            updateLogCounts(filteredLogs);
+            
+            // Enable/disable pagination buttons
+            document.getElementById('prevPage').disabled = page === 1;
+            document.getElementById('nextPage').disabled = endIndex >= filteredLogs.length;
+
+            paginatedLogs.forEach(log => {
+                const levelClass = {
+                    'info': 'text-blue-500 bg-blue-50',
+                    'warning': 'text-yellow-500 bg-yellow-50',
+                    'error': 'text-red-500 bg-red-50',
+                    'critical': 'text-purple-500 bg-purple-50'
+                }[log.level];
+
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-200 hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${log.timestamp}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${levelClass}">
+                            ${log.level}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${log.service}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900 truncate max-w-md">${log.message}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex space-x-2">
+                            <button onclick="showLogDetails(${log.id})" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="copyLogToClipboard(${log.id})" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                logsList.appendChild(row);
+            });
+        }
+
+        // Update log count statistics
+        function updateLogCounts(filteredLogs) {
+            const totalCount = filteredLogs.length;
+            const warningCount = filteredLogs.filter(log => log.level === 'warning').length;
+            const errorCount = filteredLogs.filter(log => log.level === 'error').length;
+            const criticalCount = filteredLogs.filter(log => log.level === 'critical').length;
+            
+            document.getElementById('totalLogsCount').textContent = totalCount.toLocaleString();
+            document.getElementById('warningsCount').textContent = warningCount.toLocaleString();
+            document.getElementById('errorsCount').textContent = errorCount.toLocaleString();
+            document.getElementById('criticalCount').textContent = criticalCount.toLocaleString();
+        }
+
+        // Function to show log details
+        function showLogDetails(logId) {
+            const log = logs.find(l => l.id === logId);
+            const modal = document.getElementById('logModal');
+            const logDetails = document.getElementById('logDetails');
+
+            const details = {
+                'Timestamp': log.timestamp,
+                'Level': log.level,
+                'Service': log.service,
+                'Message': log.message,
+                'Source IP': '192.168.1.1', // Example data
+                'User': log.service === 'ssh' ? 'admin' : 'system',
+                'Process ID': Math.floor(Math.random() * 10000) + 1
+            };
+
+            let detailsHtml = '';
+            for (const [key, value] of Object.entries(details)) {
+                detailsHtml += `
+                    <div class="border-b border-gray-200 pb-2">
+                        <p class="text-sm text-gray-500">${key}</p>
+                        <p class="font-medium ${key === 'Level' ? getLevelClass(value) : ''}">${value}</p>
+                    </div>
+                `;
+            }
+
+            // Add a raw log format section
+            detailsHtml += `
+                <div class="mt-4">
+                    <p class="text-sm text-gray-500 mb-2">Raw Log</p>
+                    <div class="bg-gray-100 p-4 rounded-lg font-mono text-xs overflow-x-auto">
+                        ${log.timestamp} [${log.level.toUpperCase()}] ${log.service}: ${log.message}
+                    </div>
+                </div>
+            `;
+
+            logDetails.innerHTML = detailsHtml;
+            modal.style.display = 'flex';
+        }
+
+        // Helper function to get the appropriate class for a log level
+        function getLevelClass(level) {
+            return {
+                'info': 'text-blue-500',
+                'warning': 'text-yellow-500',
+                'error': 'text-red-500',
+                'critical': 'text-purple-500'
+            }[level] || '';
+        }
+
+        // Function to close log details modal
+        function closeLogModal() {
+            const modal = document.getElementById('logModal');
+            modal.style.display = 'none';
+        }
+
+        // Function to copy log to clipboard
+        function copyLogToClipboard(logId) {
+            const log = logs.find(l => l.id === logId);
+            const logText = `${log.timestamp} [${log.level.toUpperCase()}] ${log.service}: ${log.message}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(logText)
+                .then(() => {
+                    alert('Log copied to clipboard');
+                })
+                .catch(err => {
+                    console.error('Failed to copy log: ', err);
+                });
+        }
+
+        // Function to refresh logs
+        function refreshLogs() {
+            // In a real implementation, this would fetch fresh data from the server
+            applyFilters();
+        }
+
+        // Function to export logs
+        function exportLogs() {
+            // Get currently filtered logs
+            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+            const levelFilter = document.getElementById('filterLevel').value;
+            const serviceFilter = document.getElementById('filterService').value;
+            
+            const filteredLogs = getFilteredLogs(searchTerm, levelFilter, serviceFilter);
+            
+            // Create a CSV string
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,Level,Service,Message\n";
+            
+            filteredLogs.forEach(log => {
+                const row = [
+                    log.timestamp,
+                    log.level,
+                    log.service,
+                    `"${log.message.replace(/"/g, '""')}"`
+                ].join(',');
+                csvContent += row + "\n";
+            });
+            
+            // Create a download link and trigger it
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "system_logs.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Function to get filtered logs based on current filters
+        function getFilteredLogs(searchTerm, levelFilter, serviceFilter) {
+            return logs.filter(log => {
+                const matchesSearch = log.message.toLowerCase().includes(searchTerm) || 
+                                    log.service.toLowerCase().includes(searchTerm);
+                const matchesLevel = levelFilter === 'all' || log.level === levelFilter;
+                const matchesService = serviceFilter === 'all' || log.service === serviceFilter;
+                return matchesSearch && matchesLevel && matchesService;
+            });
+        }
+
+        // Function to apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+            const levelFilter = document.getElementById('filterLevel').value;
+            const serviceFilter = document.getElementById('filterService').value;
+            
+            const filteredLogs = getFilteredLogs(searchTerm, levelFilter, serviceFilter);
+            
+            // Apply time range filter
+            const timeRangeValue = document.getElementById('timeRange').value;
+            const filteredByTime = applyTimeRangeFilter(filteredLogs, timeRangeValue);
+            
+            renderLogs(filteredByTime, 1); // Reset to first page when filters change
+        }
+
+        // Function to apply time range filter
+        function applyTimeRangeFilter(logs, timeRange) {
+            if (timeRange === 'custom') {
+                // Custom date range is handled separately
+                return logs;
+            }
+            
+            const now = new Date();
+            let cutoffTime = new Date(now);
+            
+            switch (timeRange) {
+                case '1h':
+                    cutoffTime.setHours(now.getHours() - 1);
+                    break;
+                case '6h':
+                    cutoffTime.setHours(now.getHours() - 6);
+                    break;
+                case '12h':
+                    cutoffTime.setHours(now.getHours() - 12);
+                    break;
+                case '24h':
+                    cutoffTime.setDate(now.getDate() - 1);
+                    break;
+                case '7d':
+                    cutoffTime.setDate(now.getDate() - 7);
+                    break;
+                case '30d':
+                    cutoffTime.setDate(now.getDate() - 30);
+                    break;
+                default:
+                    return logs; // No filtering for invalid ranges
+            }
+            
+            return logs.filter(log => new Date(log.timestamp) >= cutoffTime);
+        }
+
+        // Function to apply custom date range
+        function applyCustomDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates');
+                return;
+            }
+            
+            const startTimestamp = new Date(startDate).getTime();
+            const endTimestamp = new Date(endDate).getTime();
+            
+            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+            const levelFilter = document.getElementById('filterLevel').value;
+            const serviceFilter = document.getElementById('filterService').value;
+            
+            const filteredLogs = getFilteredLogs(searchTerm, levelFilter, serviceFilter);
+            
+            // Apply custom date range filter
+            const filteredByTime = filteredLogs.filter(log => {
+                const logTimestamp = new Date(log.timestamp).getTime();
+                return logTimestamp >= startTimestamp && logTimestamp <= endTimestamp;
+            });
+            
+            renderLogs(filteredByTime, 1); // Reset to first page when filters change
+        }
+
+        // Handle search and filter changes
+        document.getElementById('searchLogs').addEventListener('input', applyFilters);
+        document.getElementById('filterLevel').addEventListener('change', applyFilters);
+        document.getElementById('filterService').addEventListener('change', applyFilters);
+        
+        // Handle time range changes
+        document.getElementById('timeRange').addEventListener('change', function(e) {
+            const customDateRangeDiv = document.getElementById('customDateRange');
+            if (e.target.value === 'custom') {
+                customDateRangeDiv.classList.remove('hidden');
+            } else {
+                customDateRangeDiv.classList.add('hidden');
+                applyFilters();
+            }
+        });
+        
+        // Handle pagination
+        let currentPage = 1;
+        document.getElementById('nextPage').addEventListener('click', function() {
+            currentPage++;
+            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+            const levelFilter = document.getElementById('filterLevel').value;
+            const serviceFilter = document.getElementById('filterService').value;
+            const filteredLogs = getFilteredLogs(searchTerm, levelFilter, serviceFilter);
+            renderLogs(filteredLogs, currentPage);
+        });
+        
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+                const levelFilter = document.getElementById('filterLevel').value;
+                const serviceFilter = document.getElementById('filterService').value;
+                const filteredLogs = getFilteredLogs(searchTerm, levelFilter, serviceFilter);
+                renderLogs(filteredLogs, currentPage);
+            }
+        });
+
+        // Initialize the logs list
+        renderLogs();
+
+        // Initialize dropdown functionality
+        document.querySelector('.user-button').addEventListener('click', function() {
+            document.querySelector('.dropdown-list').classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-button')) {
+                document.querySelector('.dropdown-list').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
